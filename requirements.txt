@@ -1,0 +1,7 @@
+nltk
+transformers
+matplotlib
+numpy
+pandas
+lightgbm
+scikit-learn
