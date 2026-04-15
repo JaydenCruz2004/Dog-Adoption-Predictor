@@ -3,53 +3,191 @@
 ## Jayden Cruz
 ## DSC-4900-01: Data Science Project/Portfolio (Spring 2026)
 
-# main.py
-# Entry point — run this file to execute the full pipeline
+# model.py
+# Grid search, model training, evaluation, and saving predictions
+# Called by main.py after features have been built
 
-from sklearn.model_selection import train_test_split
-from config import TRAIN_PATH, TEST_PATH, OUTPUT_PATH, FEATURES, TARGET
-from features import load_data, add_adoption_score, add_sentiment_features
-from model import train_model, evaluate_model, print_feature_importance, save_submission
-# from model import run_grid_search  # uncomment to re-run grid search
+import numpy as np
+import pandas as pd
+import lightgbm as lgb
+# from sklearn.model_selection import GridSearchCV  # uncomment to re-run grid search
+from sklearn.metrics import mean_absolute_error, r2_score, mean_squared_error, roc_auc_score
+from config import FEATURES
+# from config import FEATURES, PARAM_GRID           # uncomment to re-run grid search
 
+# ==============================================================================
+# BEST PARAMETERS
+# Found via full grid search (324 combinations x 3-fold CV = 972 fits)
+# Best cross-val R2: 0.1874
+# To re-run the search, uncomment run_grid_search() below and in main.py
+# ==============================================================================
 
-def main():
+BEST_PARAMS = {
+    "bagging_fraction":  0.8,
+    "bagging_freq":      5,
+    "feature_fraction":  0.8,
+    "learning_rate":     0.01,
+    "min_child_samples": 10,
+    "num_leaves":        50,
+}
 
-    # 1. Load data — filters to dogs only
-    train, test = load_data(TRAIN_PATH, TEST_PATH)
+# ==============================================================================
+# GRID SEARCH — commented out after best parameters were found
+# Uncomment this function and the call in main.py to re-run
+# ==============================================================================
 
-    # 2. Convert AdoptionSpeed (0-4) to a 0-1 adoption score
-    train = add_adoption_score(train)
+# def run_grid_search(X_train, y_train):
+#     total_combinations = 1
+#     for v in PARAM_GRID.values():
+#         total_combinations *= len(v)
+#
+#     print("\nRunning full grid search...")
+#     print("Total combinations to try:", total_combinations)
+#     print("(Each combination is tested with 3-fold CV — this will take several minutes)")
+#
+#     lgb_estimator = lgb.LGBMRegressor(
+#         objective="regression",
+#         n_estimators=500,
+#         verbose=-1
+#     )
+#
+#     grid_search = GridSearchCV(
+#         lgb_estimator,
+#         param_grid=PARAM_GRID,
+#         scoring="r2",
+#         cv=3,
+#         n_jobs=-1,
+#         verbose=1
+#     )
+#
+#     grid_search.fit(X_train, y_train)
+#
+#     print("\nBest parameters found:")
+#     for param, value in grid_search.best_params_.items():
+#         print(" ", param, ":", value)
+#     print("Best cross-val R2:", round(grid_search.best_score_, 4))
+#
+#     return grid_search.best_params_
 
-    # 3. Add sentiment features from the Description column
-    print("\nRunning sentiment analysis...")
-    train = add_sentiment_features(train)
-    test  = add_sentiment_features(test)
+# ==============================================================================
+# TRAINING
+# ==============================================================================
 
-    # 4. Split into training and validation sets
-    X = train[FEATURES]
-    y = train[TARGET]
+def train_model(X_train, y_train, X_val, y_val):
+    """
+    Train the final LightGBM regression model using the best parameters
+    found during grid search. Stops early if validation RMSE stops improving.
+    Returns the trained model.
+    """
+    train_data = lgb.Dataset(X_train, label=y_train)
+    val_data   = lgb.Dataset(X_val,   label=y_val)
 
-    X_train, X_val, y_train, y_val = train_test_split(
-        X, y, test_size=0.2, random_state=42
+    params = {
+        "objective":         "regression",
+        "metric":            "rmse",
+        "verbose":           -1,
+        "learning_rate":     BEST_PARAMS["learning_rate"],
+        "num_leaves":        BEST_PARAMS["num_leaves"],
+        "min_child_samples": BEST_PARAMS["min_child_samples"],
+        "feature_fraction":  BEST_PARAMS["feature_fraction"],
+        "bagging_fraction":  BEST_PARAMS["bagging_fraction"],
+        "bagging_freq":      BEST_PARAMS["bagging_freq"],
+    }
+
+    print("\nTraining final model with best parameters...")
+    model = lgb.train(
+        params,
+        train_data,
+        num_boost_round=1200,
+        valid_sets=[val_data],
+        callbacks=[
+            lgb.early_stopping(stopping_rounds=50, verbose=True),
+            lgb.log_evaluation(period=50)
+        ]
     )
-    print("\nTrain size:", len(X_train), "| Validation size:", len(X_val))
 
-    # 5. Grid search - uncomment to re-run (takes ~1.5 hrs)
-    # best_params = run_grid_search(X_train, y_train)
+    return model
 
-    # 6. Train the final model using best parameters from grid search
-    model = train_model(X_train, y_train, X_val, y_val)
+# ==============================================================================
+# EVALUATION
+# ==============================================================================
 
-    # 7. Evaluate — prints MAE, RMSE, R2, ROC AUC, and sample predictions
-    evaluate_model(model, X_val, y_val)
+def evaluate_model(model, X_val, y_val):
+    """
+    Evaluate the trained model on the validation set.
+    Reports MAE, RMSE, R2, and ROC AUC.
+    Prints a sample of predictions alongside actual scores.
+    Returns the validation predictions.
+    """
+    val_preds = np.clip(model.predict(X_val), 0, 1)
 
-    # 8. Feature importance — shows which features mattered most
-    print_feature_importance(model)
+    # MAE — average absolute error between predicted and actual score
+    mae = mean_absolute_error(y_val, val_preds)
 
-    # 9. Generate and save final predictions on the test set
-    save_submission(model, test, OUTPUT_PATH)
+    # RMSE — same as MAE but penalizes larger errors more heavily
+    rmse = np.sqrt(mean_squared_error(y_val, val_preds))
 
+    # R2 — proportion of variation in the score that the model explains
+    r2 = r2_score(y_val, val_preds)
 
-if __name__ == "__main__":
-    main()
+    # ROC AUC — converts to binary (score >= 0.5 = adopted well)
+    # measures how cleanly the model separates fast vs slow adoptions
+    binary_actual = (y_val >= 0.5).astype(int)
+    roc_auc = roc_auc_score(binary_actual, val_preds)
+
+    print("\n" + "=" * 50)
+    print("MODEL EVALUATION")
+    print("=" * 50)
+    print("MAE   (avg error, lower is better):           ", round(mae, 4))
+    print("RMSE  (penalizes big errors, lower is better):", round(rmse, 4))
+    print("R2    (variation explained, higher is better):", round(r2, 4))
+    print("ROC AUC (fast vs slow separation, 1.0=best): ", round(roc_auc, 4))
+
+    print("\nSample predictions vs actual:")
+    comparison = pd.DataFrame({
+        "Actual Score":    y_val.values,
+        "Predicted Score": val_preds.round(3)
+    })
+    print(comparison.head(10).to_string(index=False))
+
+    return val_preds
+
+# ==============================================================================
+# FEATURE IMPORTANCE
+# ==============================================================================
+
+def print_feature_importance(model):
+    """
+    Print a ranked table of feature importances by information gain.
+    Higher gain means the feature contributed more to reducing prediction error.
+    """
+    importance = pd.DataFrame({
+        "Feature":    FEATURES,
+        "Importance": model.feature_importance(importance_type="gain")
+    }).sort_values("Importance", ascending=False)
+
+    print("\n" + "=" * 50)
+    print("FEATURE IMPORTANCE")
+    print("=" * 50)
+    print(importance.to_string(index=False))
+
+# ==============================================================================
+# PREDICTION AND SUBMISSION
+# ==============================================================================
+
+def save_submission(model, test, output_path):
+    """
+    Generate predictions on the test set, clip to 0-1 range,
+    and save a CSV with PetID and AdoptionScore columns.
+    """
+    X_test = test[FEATURES]
+    test_scores = np.clip(model.predict(X_test), 0, 1)
+
+    submission = pd.DataFrame({
+        "PetID":         test["PetID"],
+        "AdoptionScore": test_scores.round(3)
+    })
+
+    submission.to_csv(output_path, index=False)
+    print("\nSubmission saved to", output_path, "-", len(submission), "rows")
+    print(submission.head(10).to_string(index=False))
