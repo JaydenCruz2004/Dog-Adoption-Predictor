@@ -43,7 +43,7 @@ BEST_PARAMS = {
 #
 #     print("\nRunning full grid search...")
 #     print("Total combinations to try:", total_combinations)
-#     print("(Each combination is tested with 3-fold CV — this will take several minutes)")
+#     print("(Each combination is tested with 3-fold CV - this will take several minutes)")
 #
 #     lgb_estimator = lgb.LGBMRegressor(
 #         objective="regression",
