@@ -49,6 +49,8 @@ def main():
 
     # 9. Generate and save final predictions on the test set
     save_submission(model, test, OUTPUT_PATH)
+    # save the model
+    model.save_model('/Users/jaydencruz/PycharmProjects/DogProject/outputs/lgb_model.txt')
 
 
 if __name__ == "__main__":
