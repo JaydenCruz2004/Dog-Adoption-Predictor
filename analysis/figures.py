@@ -3,6 +3,10 @@
 ## Jayden Cruz
 ## DSC-4900-01: Data Science Project/Portfolio (Spring 2026)
 
+## figure.py
+# creates figure of dog bucket distribution
+# Make sure main.py has been run (model is saved)
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -39,4 +43,14 @@ ax.spines["right"].set_visible(False)
 
 plt.tight_layout()
 plt.savefig("/Users/jaydencruz/PycharmProjects/DogProject/outputs/poster_score_distribution.png", dpi=200, bbox_inches="tight")
-print("Saved to outputs/poster_score_distribution.png")
+
+
+# percentage distribution instead of counts
+percent = dogs["AdoptionSpeed"].value_counts(normalize=True).sort_index() * 100
+
+plt.figure()
+plt.bar(percent.index, percent.values)
+plt.title("Adoption Speed (%)")
+plt.xlabel("Speed")
+plt.ylabel("Percent")
+plt.savefig("/Users/jaydencruz/PycharmProjects/DogProject/outputs/adoption_speed_percent.png")

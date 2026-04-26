@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e7bb5262-2f6c-4298-9b09-81c6b2fef9e4" name="Changes" comment="final changes for SPARK">
-      <change afterPath="$PROJECT_DIR$/analysis/dogwebsite.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/dog.html" afterDir="false" />
+    <list default="true" id="e7bb5262-2f6c-4298-9b09-81c6b2fef9e4" name="Changes" comment="pycharm">
+      <change afterPath="$PROJECT_DIR$/web/images/SPARK POSTER.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/dogwebsite.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/figures.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/figures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/roc_curve.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/roc_curve.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/BreedLabels.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/ColorLabels.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/StateLabels.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/submission.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dog.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/dog.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,34 +55,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.dog.html.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.dogwebsite.executor": "Run",
-    "Python.figures.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.model.executor": "Run",
-    "Python.model_v2.executor": "Run",
-    "Python.model_v3.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/jaydencruz/PycharmProjects/DogProject/data",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.dog.html.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.dogwebsite.executor&quot;: &quot;Run&quot;,
+    &quot;Python.figures.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.model.executor&quot;: &quot;Run&quot;,
+    &quot;Python.model_v2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.model_v3.executor&quot;: &quot;Run&quot;,
+    &quot;Python.roc_curve.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/jaydencruz/PycharmProjects/DogProject/web/images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.notifications&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/web/images" />
       <recent name="$PROJECT_DIR$/data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -84,8 +94,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PY-252.26830.99" />
-        <option value="bundled-python-sdk-164cda30dcd9-0af03a5fa574-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26830.99" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-PY-252.28539.27" />
+        <option value="bundled-python-sdk-07523f343e4f-968fe969f28a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.28539.27" />
       </set>
     </attachedChunks>
   </component>
@@ -112,7 +122,12 @@
       <workItem from="1775619484244" duration="4752000" />
       <workItem from="1776223617985" duration="5204000" />
       <workItem from="1776360843381" duration="7832000" />
-      <workItem from="1776820651164" duration="2408000" />
+      <workItem from="1776820651164" duration="2581000" />
+      <workItem from="1776830520201" duration="806000" />
+      <workItem from="1776867702017" duration="957000" />
+      <workItem from="1776926795010" duration="3135000" />
+      <workItem from="1776960760927" duration="388000" />
+      <workItem from="1777172168564" duration="1434000" />
     </task>
     <task id="LOCAL-00001" summary="final changes for SPARK">
       <option name="closed" value="true" />
@@ -122,7 +137,23 @@
       <option name="project" value="LOCAL" />
       <updated>1776804352521</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="dogwebsite.py puts the dog info into dogs.json">
+      <option name="closed" value="true" />
+      <created>1776830159768</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1776830159768</updated>
+    </task>
+    <task id="LOCAL-00003" summary="pycharm">
+      <option name="closed" value="true" />
+      <created>1776830321208</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1776830321208</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -130,15 +161,17 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="final changes for SPARK" />
-    <option name="LAST_COMMIT_MESSAGE" value="final changes for SPARK" />
+    <MESSAGE value="dogwebsite.py puts the dog info into dogs.json" />
+    <MESSAGE value="pycharm" />
+    <option name="LAST_COMMIT_MESSAGE" value="pycharm" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/DogProject$roc_curve.coverage" NAME="roc_curve Coverage Results" MODIFIED="1776231660238" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />
-    <SUITE FILE_PATH="coverage/DogProject$main.coverage" NAME="main Coverage Results" MODIFIED="1776821420416" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />
-    <SUITE FILE_PATH="coverage/DogProject$figures.coverage" NAME="figures Coverage Results" MODIFIED="1776796751343" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis" />
+    <SUITE FILE_PATH="coverage/DogProject$roc_curve.coverage" NAME="roc_curve Coverage Results" MODIFIED="1777172216164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis" />
+    <SUITE FILE_PATH="coverage/DogProject$main.coverage" NAME="main Coverage Results" MODIFIED="1776961058970" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />
+    <SUITE FILE_PATH="coverage/DogProject$figures.coverage" NAME="figures Coverage Results" MODIFIED="1777172645730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis" />
     <SUITE FILE_PATH="coverage/DogProject$model.coverage" NAME="model Coverage Results" MODIFIED="1775621079216" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DogProject$model_v2.coverage" NAME="model_v2 Coverage Results" MODIFIED="1775621519496" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/DogProject$dogwebsite.coverage" NAME="dogwebsite Coverage Results" MODIFIED="1776821647449" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis" />
+    <SUITE FILE_PATH="coverage/DogProject$dogwebsite.coverage" NAME="dogwebsite Coverage Results" MODIFIED="1776830594136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis" />
     <SUITE FILE_PATH="coverage/DogProject$model_v3.coverage" NAME="model_v3 Coverage Results" MODIFIED="1775622250756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -7,17 +7,14 @@
 # All constants and settings for the project live here
 # If you need to change a path, parameter, or feature list — this is the only file you touch
 
-# ==============================================================================
 # FILE PATHS
-# ==============================================================================
+
 
 TRAIN_PATH = "/Users/jaydencruz/PycharmProjects/DogProject/data/train.csv"
 TEST_PATH = "/Users/jaydencruz/PycharmProjects/DogProject/data/test.csv"
 OUTPUT_PATH = "submission.csv"
 
-# ==============================================================================
 # DATA SETTINGS
-# ==============================================================================
 
 DOG_TYPE = 1  # Type == 1 means dog in the dataset
 
@@ -33,9 +30,7 @@ SPEED_TO_SCORE = {
 
 TARGET = "AdoptionScore"
 
-# ==============================================================================
 # FEATURES: 18 features
-# ==============================================================================
 
 FEATURES = [
     "Age",  # age in months
@@ -58,9 +53,7 @@ FEATURES = [
     "sentiment_compound"  # overall tone (-1 very negative to +1 very positive)
 ]
 
-# ==============================================================================
 # GRID SEARCH PARAMETERS
-# ==============================================================================
 
 # GridSearchCV will try every single combination of these values
 # Current grid = 324 total combinations x 3 folds = 972 model fits

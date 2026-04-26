@@ -10,7 +10,7 @@
 import pandas as pd
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
-from config import SPEED_TO_SCORE, DOG_TYPE
+from models.config import SPEED_TO_SCORE, DOG_TYPE
 
 nltk.download("vader_lexicon", quiet=True)
 

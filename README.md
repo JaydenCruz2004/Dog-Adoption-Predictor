@@ -3,7 +3,9 @@
 **Belmont University | DSC-4900-01: Data Science Project/Portfolio (Spring 2026)**
 **Jayden Cruz**
 
-A LightGBM regression model that scores each dog's likelihood of being adopted quickly. Scores run from 0 to 1, where higher means faster adoption. The model combines tabular pet attributes with VADER sentiment analysis on rescuer-written descriptions from the PetFinder dataset.
+A LightGBM regression model that scores each dog's likelihood of being adopted quickly. Scores run from 0 to 1, where
+higher means faster adoption. The model uses tabular pet attributes combined with VADER sentiment analysis on
+rescuer-written descriptions from the PetFinder.my dataset.
 
 ---
 
@@ -17,61 +19,77 @@ A LightGBM regression model that scores each dog's likelihood of being adopted q
 6. [NLP and Sentiment Analysis](#nlp-and-sentiment-analysis)
 7. [Results](#results)
 8. [Figures](#figures)
-9. [Project Structure](#project-structure)
-10. [Code Overview](#code-overview)
-11. [How to Run](#how-to-run)
-12. [Pipeline](#pipeline)
-13. [Adoption Score](#adoption-score)
-14. [Grid Search](#grid-search)
-15. [Dependencies](#dependencies)
+9. [Interactive Website](#interactive-website)
+10. [Poster](#poster)
+11. [Project Structure](#project-structure)
+12. [Code Overview](#code-overview)
+13. [How to Run](#how-to-run)
+14. [Pipeline](#pipeline)
+15. [Adoption Score](#adoption-score)
+16. [Grid Search](#grid-search)
+17. [Dependencies](#dependencies)
 
 ---
 
 ## Objectives
 
-This project predicts how quickly a dog listed on PetFinder will be adopted. Rather than predicting the raw category (0 to 4), the model outputs a continuous score between 0 and 1 that is easier to interpret and compare across dogs. A score near 1.0 means the dog is likely to be adopted same-day or within the week. A score near 0.0 means the dog is unlikely to be adopted within 100 days.
+This project predicts how quickly a dog listed on PetFinder.my will be adopted. The original dataset has five adoption
+speed categories (0 to 4). Rather than predicting those categories directly, the model outputs a score from 0 to 1 that
+is easier to read and compare across dogs.
 
-The two main techniques applied are gradient boosted trees (LightGBM) and natural language processing (VADER sentiment analysis). Both are covered as advanced topics below.
+A score near 1.0 means same-day or within-a-week adoption. A score near 0.0 means the dog was not adopted within 100
+days.
+
+The two techniques used are gradient boosted trees (LightGBM) and natural language processing (VADER sentiment analysis
+on rescuer descriptions).
 
 ---
 
 ## Advanced Topics
 
-This project covers 5 points worth of advanced topics from the approved list.
+This project covers 5.5 points from the approved advanced topics list.
 
-| Topic | Points |
-|-------|--------|
-| Gradient Boosting (LightGBM) | 1 |
-| Natural Language Processing (VADER) | 2 |
-| ROC / AUC Curves | 1 |
-| Cross Validation (3-fold CV in grid search) | 0.5 |
-| Feature Selection / Engineering | 0.5 |
-| **Total** | **5.0** |
+| Topic                                       | Points  |
+|---------------------------------------------|---------|
+| Gradient Boosting (LightGBM)                | 1.0     |
+| Natural Language Processing (VADER)         | 2.0     |
+| ROC / AUC Curves                            | 1.0     |
+| Cross Validation (3-fold CV in grid search) | 0.5     |
+| Feature Selection / Engineering             | 0.5     |
+| **Total**                                   | **5.0** |
 
 ### 1. Gradient Boosting (1 point)
 
-LightGBM is a gradient boosting framework that builds an ensemble of decision trees sequentially, where each tree corrects the errors of the previous one. It was chosen because it trains faster than standard gradient boosting on larger datasets using histogram-based learning and leaf-wise tree growth.
+LightGBM builds decision trees one at a time. Each new tree corrects the mistakes the previous ones made. It was chosen
+because it trains faster than standard gradient boosting on larger datasets, using histogram-based learning and
+leaf-wise tree growth.
 
-The model was configured as a regressor with `objective = regression` and `metric = rmse`. Early stopping was applied with a patience of 50 rounds on a held-out validation set. The final model trained for 634 rounds.
+The model uses `objective = regression` and `metric = rmse`. Early stopping cuts training when validation error stops
+improving for 50 rounds. The final model ran for 634 trees.
 
-Key parameters after tuning:
+Best parameters after grid search:
 
-| Parameter | Value |
-|-----------|-------|
-| num_leaves | 50 |
-| learning_rate | 0.01 |
-| min_child_samples | 10 |
-| feature_fraction | 0.8 |
-| bagging_fraction | 0.8 |
-| bagging_freq | 5 |
+| Parameter         | Value |
+|-------------------|-------|
+| num_leaves        | 50    |
+| learning_rate     | 0.01  |
+| min_child_samples | 10    |
+| feature_fraction  | 0.8   |
+| bagging_fraction  | 0.8   |
+| bagging_freq      | 5     |
 
 ### 2. Natural Language Processing (2 points)
 
-VADER (Valence Aware Dictionary and sEntiment Reasoner) is a rule-based sentiment analysis tool built for short-form text. It scores words and phrases against a pre-built lexicon that accounts for punctuation, capitalization, and modifiers like "very" or "not". No training data is required.
+VADER (Valence Aware Dictionary and sEntiment Reasoner) is a rule-based sentiment tool built for short informal text. It
+scores words against a pre-built lexicon that accounts for punctuation, capitalization, and modifier words. It needs no
+training data.
 
-Each dog's `Description` field was passed through VADER to produce four scores: negativity, neutrality, positivity, and a compound score summarizing overall tone on a -1 to +1 scale. These four columns were added as features alongside the tabular data.
+Each dog's `Description` field was passed through VADER to produce four scores: negativity, neutrality, positivity, and
+a compound score from -1 to +1. Those four scores were added as new columns and fed into LightGBM alongside the tabular
+features.
 
-All four sentiment features ranked in the top seven by information gain, with `sentiment_compound` ranking second overall behind Age.
+All four sentiment features ranked in the top seven by information gain. `sentiment_compound` ranked second overall,
+behind Age.
 
 ```
 Feature              Importance
@@ -84,144 +102,188 @@ PhotoAmt              856.35
 sentiment_neg         782.38
 ```
 
-The tone of a rescuer's description turned out to be more predictive than most structured fields including sterilization status, fur length, and color.
+Dogs whose rescuers wrote more positive descriptions tended to get adopted faster. The tone of a two-sentence listing
+was more predictive than fur length, color, or sterilization status.
 
 ### 3. ROC / AUC Curves (1 point)
 
-ROC (Receiver Operating Characteristic) curves measure how well a model separates two classes at different decision thresholds. The AUC summarizes this into a single number: 1.0 is perfect, 0.5 is random.
+The ROC curve measures how well a model separates two classes at different decision thresholds. The AUC is the area
+under that curve: 1.0 is perfect, 0.5 is random.
 
-The problem was framed as binary: dogs with an AdoptionScore of 0.5 or higher (adopted within a month) vs dogs below 0.5. The ROC curve was plotted on the validation set and the AUC came out to 0.7404. This means the model correctly ranks a fast-adoption dog above a slow-adoption dog about 74% of the time.
+The task was framed as binary: dogs with a score of 0.5 or higher (adopted within a month) vs dogs below 0.5. On the
+validation set, the AUC came out to 0.7404. That means if you gave the model a fast-adoption dog and a slow-adoption
+dog, it would rank the fast one higher about 74% of the time.
 
-The ROC curve plot is in `analysis/roc_curve.py` and the figure is saved to `outputs/roc_curve.png`.
+The curve is generated by `analysis/roc_curve.py` and saved to `outputs/roc_curve.png`.
 
 ### 4. Cross Validation (0.5 points)
 
-3-fold cross validation was used inside the grid search to evaluate each of the 324 parameter combinations. Each combination was trained on two thirds of the training data and evaluated on the remaining third, three times with different splits. The R2 score was averaged across the three folds to select the best combination. This prevents selecting parameters that work well on one particular split by chance.
+3-fold cross validation ran inside the grid search to evaluate all 324 parameter combinations. Each combination trained
+on two thirds of the data and validated on the remaining third, three times with different splits. The R2 score was
+averaged across the three folds to pick the best combination.
 
-Best cross-validation R2: 0.1874 across 972 total model fits.
+This prevents picking parameters that happened to work well on one particular split. Total fits: 972. Best
+cross-validation R2: 0.1874.
 
 ### 5. Feature Selection / Engineering (0.5 points)
 
-Two types of feature work were done. Four new features were engineered from raw text using VADER, turning an unstructured description string into four numeric columns the model can use directly. Feature selection was then applied after an initial run: `Health` and `VideoAmt` were dropped after showing near-zero importance scores, reducing noise without affecting performance.
+Four new features were built from raw text using VADER, turning unstructured descriptions into numeric columns the model
+could use. After the first run, `Health` and `VideoAmt` were dropped. Both had near-zero importance scores (3.39 and
+4.46 gain respectively, vs 2,305 for Age). Removing them reduced noise without affecting performance.
+
+### 6. Simple Website Creation (0.5 points)
+
+An interactive website at `web/dog.html` shows 24 real dogs from the test set with their actual model scores, photos,
+and stats from the CSV. A score slider filters dogs in real time. Clicking any card opens a modal with the full
+description and all stats. The site reads from `web/dogs.json`, which was created manually.  [Dog Website](https://www.jaydencruz.tech/web/dog.html)
 
 ---
 
 ## Data
 
-The dataset comes from the [PetFinder Adoption Prediction](https://www.kaggle.com/competitions/petfinder-adoption-prediction/overview) competition on Kaggle. The data is subject to Kaggle competition rules and cannot be redistributed, so it is not included in this repository.
+The dataset comes from
+the [PetFinder Adoption Prediction](https://www.kaggle.com/competitions/petfinder-adoption-prediction/overview)
+competition on Kaggle, sourced from PetFinder.my, the largest animal welfare platform in Malaysia. The data is subject
+to competition rules and is not included in this repo.
 
 To get the data:
 
 1. Go to https://www.kaggle.com/competitions/petfinder-adoption-prediction/overview
 2. Accept the competition rules
-3. Download `train.csv` and `test.csv` from the Data tab
+3. Download `train.csv` and `test.csv`
 4. Place both files in the `data/` folder
 
-The training set contains 8,132 dog listings after filtering to dogs only (Type == 1). The test set contains 2,100 dogs.
+Training set: 8,132 dogs after filtering to Type == 1. Test set: 2,100 dogs.
 
 ---
 
 ## Variables
 
-These are the features used in the final model. `Health` and `VideoAmt` were dropped after showing near-zero feature importance in early experiments.
+`Health` and `VideoAmt` were dropped after showing near-zero importance in early runs.
 
-| Feature | Description |
-|---------|-------------|
-| Age | Age of the dog in months when listed |
-| Breed1 | Primary breed ID |
-| Breed2 | Secondary breed ID (mixed breeds) |
-| Gender | 1 = Male, 2 = Female, 3 = Mixed |
-| Color1 | Primary color ID |
-| Color2 | Secondary color ID |
-| MaturitySize | Size at maturity: 1 = Small, 2 = Medium, 3 = Large, 4 = Extra Large |
-| FurLength | 1 = Short, 2 = Medium, 3 = Long |
-| Vaccinated | 1 = Yes, 2 = No, 3 = Not Sure |
-| Dewormed | 1 = Yes, 2 = No, 3 = Not Sure |
-| Sterilized | 1 = Yes, 2 = No, 3 = Not Sure |
-| Quantity | Number of pets in the listing |
-| Fee | Adoption fee in local currency (0 = free) |
-| PhotoAmt | Number of photos uploaded for the listing |
-| sentiment_neg | VADER negativity score from the description (0 to 1) |
-| sentiment_neu | VADER neutrality score from the description (0 to 1) |
-| sentiment_pos | VADER positivity score from the description (0 to 1) |
-| sentiment_compound | Overall VADER sentiment score (-1 to +1) |
+| Feature            | Description                                       |
+|--------------------|---------------------------------------------------|
+| Age                | Age in months when listed                         |
+| Breed1             | Primary breed ID                                  |
+| Breed2             | Secondary breed ID                                |
+| Gender             | 1 = Male, 2 = Female, 3 = Mixed                   |
+| Color1             | Primary color ID                                  |
+| Color2             | Secondary color ID                                |
+| MaturitySize       | 1 = Small, 2 = Medium, 3 = Large, 4 = Extra Large |
+| FurLength          | 1 = Short, 2 = Medium, 3 = Long                   |
+| Vaccinated         | 1 = Yes, 2 = No, 3 = Not Sure                     |
+| Dewormed           | 1 = Yes, 2 = No, 3 = Not Sure                     |
+| Sterilized         | 1 = Yes, 2 = No, 3 = Not Sure                     |
+| Quantity           | Number of pets in the listing                     |
+| Fee                | Adoption fee (0 = free)                           |
+| PhotoAmt           | Number of photos uploaded                         |
+| sentiment_neg      | VADER negativity score (0 to 1)                   |
+| sentiment_neu      | VADER neutrality score (0 to 1)                   |
+| sentiment_pos      | VADER positivity score (0 to 1)                   |
+| sentiment_compound | Overall VADER score (-1 to +1)                    |
 
-**Target variable:** `AdoptionScore` — a continuous 0 to 1 score derived from the original `AdoptionSpeed` column (see Adoption Score section).
+**Target:** `AdoptionScore` - a 0 to 1 score mapped from the original `AdoptionSpeed` column.
 
-**Dropped features:**
+**Dropped:**
 
-| Feature | Reason |
-|---------|--------|
-| Health | Near-zero importance (3.39 gain vs 2305 for Age) |
-| VideoAmt | Near-zero importance (4.46 gain vs 2305 for Age) |
-| Type | Filtered out — only dogs (Type == 1) are included |
+| Feature  | Reason                               |
+|----------|--------------------------------------|
+| Health   | Gain of 3.39 vs 2305 for Age         |
+| VideoAmt | Gain of 4.46 vs 2305 for Age         |
+| Type     | Filtered out - dogs only (Type == 1) |
 
 ---
 
 ## Model
 
-The model is a LightGBM regressor trained to predict a continuous adoption score. Regression was chosen over classification because the score is an ordered, continuous value and regression better captures the relative distance between outcomes.
+LightGBM was used as a regressor. Regression was chosen over classification because the adoption score is ordered and
+continuous. The distance between 0.75 and 1.0 means something different than the distance between 0.25 and 0.50, and
+regression captures that. Classification would treat all five categories as equal.
 
-Early stopping was used with a patience of 50 rounds on a held-out validation set (20% of training data, 1,627 dogs). The final model used 634 trees, compared to 97 trees before hyperparameter tuning.
+Early stopping ran on a held-out validation set (20% of training data, 1,627 dogs). The final model used 634 trees.
+Before grid search tuning, the model stopped at 97 trees. The longer training after tuning shows the better parameters
+gave the model more to learn from.
+
+The trained model is saved to `outputs/lgb_model.txt` after each run so it can be loaded without retraining.
 
 ---
 
 ## NLP and Sentiment Analysis
 
-VADER was applied to the `Description` column for every dog in both the training and test sets. Missing descriptions were filled with empty strings before scoring so no rows were dropped.
+VADER ran on the `Description` column for every dog in both train and test. Missing descriptions were filled with empty
+strings so no rows were dropped.
 
-The four scores produced per description:
+The four scores per description:
 
-- `sentiment_neg` — proportion of text that is negative in tone
-- `sentiment_neu` — proportion of text that is neutral in tone
-- `sentiment_pos` — proportion of text that is positive in tone
-- `sentiment_compound` — normalized overall score from -1 (most negative) to +1 (most positive)
+- `sentiment_neg` - share of text that reads as negative
+- `sentiment_neu` - share of text that reads as neutral
+- `sentiment_pos` - share of text that reads as positive
+- `sentiment_compound` - overall score from -1 to +1
 
 Example from the training data:
 
-> "Good guard dog, very alert, active, obedience waiting for her good master, plz call or sms for more details if you really get interested, thanks!!"
+> "Good guard dog, very alert, active, obedience waiting for her good master, plz call or sms for more details if you
+> really get interested, thanks!!"
 > compound: 0.9538 | pos: 0.517 | neu: 0.483 | neg: 0.000
 
-All four scores were appended to the dataframe as new columns and included in the feature set passed to LightGBM.
+The four scores were appended to the dataframe and passed to LightGBM alongside the tabular columns.
 
 ---
 
 ## Results
 
-| Metric | Value |
-|--------|-------|
-| MAE | 0.2083 |
-| RMSE | 0.2521 |
-| R2 | 0.2187 |
+| Metric  | Value  |
+|---------|--------|
+| MAE     | 0.2083 |
+| RMSE    | 0.2521 |
+| R2      | 0.2187 |
 | ROC AUC | 0.7404 |
 
-The R2 of 0.22 is modest. Adoption speed depends on things the data does not capture, like how a dog behaves during a visit or an adopter's personal preferences on a given day. The ROC AUC of 0.74 is more useful here: when the task is framed as separating fast adoptions from slow ones, the model does a decent job.
+R2 of 0.22 is ok. Adoption speed depends on things the data cannot capture, like how a dog behaves in person or what
+an adopter is looking for on a given day. The ROC AUC of 0.74 is more useful here. It shows the model can meaningfully
+separate fast adoptions from slow ones.
 
-### What actually predicts adoption speed
+**What actually predicts adoption speed:**
 
-Age is the strongest signal by a wide margin. Younger dogs get adopted faster. Breed matters too, though it is hard to know if that is driven by the breed itself or by how common certain breeds are in the dataset.
+Age is the strongest signal. Younger dogs get adopted faster. Breed matters but it is hard to know whether that reflects
+the breed itself or just how common certain breeds are in the dataset.
 
-The sentiment results are the most interesting finding. All four VADER scores rank above most tabular features. Dogs whose rescuers wrote more positive, expressive descriptions tended to get adopted faster. Whether that reflects the dog's personality, the rescuer's level of care, or just correlation with other factors is hard to separate, but the pattern held consistently.
+The sentiment finding is the most interesting result. All four VADER scores ranked above most tabular features. The tone
+of the rescuer's description was more predictive than fur length, color, or sterilization status. Whether that reflects
+the dog's personality, the rescuer's care, or some other factor is hard to separate, but the pattern was consistent.
 
-Photo count showed up in the top six. More photos, faster adoption.
+Photo count ranked in the top six. More photos, faster adoption.
 
-At the bottom: health status and video count barely moved the needle and were removed from the final model.
+Health and video count contributed almost nothing and were removed.
 
 ---
 
 ## Figures
 
-All figures are saved to the `outputs/` folder and generated by code in `analysis/` folder.
+All figures are saved to `outputs/` and generated by scripts in `analysis/`.
 
-**Feature Importance Plot** (`outputs/feature_importance.png`) — horizontal bar chart ranking all 18 features by LightGBM information gain. Age and sentiment_compound are the clear leaders. Shows the NLP features outperforming most tabular columns.
+**AdoptionScore Distribution** (`outputs/score_distribution.png`) - bar chart of the target variable across the training
+set. The distribution skews toward 0.0. Only 170 dogs were adopted same-day vs 2,414 that were not adopted at all. This
+imbalance explains some of the model's difficulty at the extremes.
 
-**AdoptionScore Distribution** (`outputs/score_distribution.png`) — histogram of the target variable across the training set. The distribution is skewed toward 0.0 (not adopted), which explains some of the model's difficulty predicting extreme values.
+**ROC Curve** (`outputs/roc_curve.png`) - true positive rate vs false positive rate at every threshold, with AUC labeled
+and the random classifier baseline shown. Generated by `analysis/roc_curve.py`.
 
-**ROC Curve** (`outputs/roc_curve.png`) — plots the true positive rate against the false positive rate at every decision threshold. The AUC of 0.74 is labeled on the plot. Generated by `analysis/roc_curve.py`.
+**Poster Distribution** (`outputs/poster_score_distribution.png`) - a larger, print-ready version of the score
+distribution chart used in the SPARK poster.
 
-**Predicted vs Actual Scores** (`outputs/predicted_vs_actual.png`) — scatter plot of validation set predictions against actual scores. The cluster toward the middle reflects the model's tendency to predict conservatively rather than committing to extreme values.
+---
 
-**Sentiment Score Distribution by Adoption Class** (`outputs/sentiment_by_class.png`) — box plots comparing compound sentiment scores across adoption speed categories. Faster-adopted dogs show slightly higher median compound scores.
+## Interactive Website
+
+`web/dog.html` shows 24 real dogs from the test set with their model scores, actual photos, and stats pulled from the
+CSV. The site reads from `web/dogs.json`.
+
+To view website: [Dog Website](https://www.jaydencruz.tech/web/dog.html)
+
+## Poster
+
+[Poster presented at the Belmont University SPARK Symposium, Spring 2026](web/images/SPARK%20POSTER.pdf)
 
 ---
 
@@ -229,16 +291,25 @@ All figures are saved to the `outputs/` folder and generated by code in `analysi
 
 ```
 DogProject/
-├── data/                  # place train.csv and test.csv here (not pushed to GitHub)
+├── data/                        # train.csv and test.csv go here (not in repo)
 ├── models/
-│   ├── config.py          # all constants: paths, features, parameters
-│   ├── features.py        # data loading and feature engineering
-│   ├── model.py           # training, evaluation, predictions
-│   └── main.py            # entry point, run this
+│   ├── config.py                # paths, features, parameters
+│   ├── features.py              # data loading and feature engineering
+│   ├── model.py                 # training, evaluation, predictions
+│   └── main.py                  # run this
 ├── analysis/
-│   ├── figures.py         # generates all figures
-│   └── roc_curve.py       # generates the ROC curve plot
-├── outputs/               # figures and submission.csv saved here (not pushed to GitHub)
+│   ├── figures.py               # generates all figures
+│   └── roc_curve.py             # generates the ROC curve
+├── notebooks/
+│   └── sample.ipynb             # playground notebook
+├── outputs/
+│   ├── lgb_model.txt            # saved model
+│   ├── roc_curve.png
+│   └── poster_score_distribution.png
+├── web/
+│   ├── dog.html                 # interactive dog explorer
+│   ├── dogs.json                # model predictions for 24 dogs
+│   └── images/                  # dog photos and poster PDF
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -248,82 +319,101 @@ DogProject/
 
 ## Code Overview
 
-The project is split into four files so each one has a single job.
+**`config.py`** holds all constants: file paths, the feature list, the speed-to-score mapping, and the grid search
+parameter grid. It is the only file to change if you need to update a path or add a feature.
 
-**`config.py`** holds every constant used across the project: file paths, the feature list, the speed-to-score mapping, and the grid search parameter grid. If you need to change a path or add a feature, this is the only file you touch.
+**`features.py`** handles data preparation. `load_data()` reads the CSVs and filters to dogs. `add_adoption_score()`
+converts AdoptionSpeed to the 0 to 1 scale. `add_sentiment_features()` runs VADER and adds the four sentiment columns.
 
-**`features.py`** handles all data preparation. `load_data()` reads the CSVs and filters to dogs. `add_adoption_score()` maps the integer AdoptionSpeed to the 0 to 1 scale. `add_sentiment_features()` runs VADER on the Description column and adds four new columns to the dataframe.
+**`model.py`** has the ML logic. The grid search is commented out with best parameters hardcoded in `BEST_PARAMS`.
+`train_model()` fits LightGBM with early stopping. `evaluate_model()` computes MAE, RMSE, R2, and ROC AUC.
+`print_feature_importance()` ranks features by gain. `save_submission()` writes the output CSV.
 
-**`model.py`** contains the ML logic. The grid search is commented out with the best parameters hardcoded in `BEST_PARAMS` at the top so the model runs immediately without waiting 45 minutes. `train_model()` fits LightGBM with early stopping. `evaluate_model()` computes MAE, RMSE, R2, and ROC AUC. `print_feature_importance()` ranks features by information gain. `save_submission()` generates test set predictions and writes the output CSV.
+**`main.py`** is the only file you run. It calls each function in order and saves the model to `outputs/lgb_model.txt`.
 
-**`main.py`** is the only file you run. It calls each function in order and acts as a readable summary of the full pipeline.
+**`figures.py`** generates all analysis figures and saves them to `outputs/`.
+
+**`roc_curve.py`** generates the ROC curve and saves it to `outputs/roc_curve.png`.
 
 ---
 
 ## How to Run
 
 **1. Clone the repo**
+
 ```bash
 git clone https://github.com/JaydenCruz2004/Dog-Adoption-Predictor.git
 cd Dog-Adoption-Predictor
 ```
 
 **2. Install dependencies**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 **3. Download the data**
 
-Follow the steps in the Data section above and place `train.csv` and `test.csv` in the `data/` folder.
+Follow the steps in the Data section above and place `train.csv` and `test.csv` in `data/`.
 
-**4. Run the pipeline**
+**4. Run the model**
+
 ```bash
 python models/main.py
 ```
 
 **5. Generate figures**
+
 ```bash
 python analysis/figures.py
 python analysis/roc_curve.py
 ```
 
-All figures are saved to `outputs/`.
+**6. Generate website data**
+
+```bash
+python analysis/dogwebsite.py
+```
+
+Open `web/dog.html` in a browser to see the predictions.
 
 ---
 
 ## Pipeline
 
-`main.py` runs these steps in order:
+`main.py` runs in this order:
 
-1. Load train and test CSVs, filter to dogs only
-2. Convert `AdoptionSpeed` (0 to 4) to a continuous 0 to 1 score
-3. Run VADER sentiment analysis on each dog's description
-4. Split into 80/20 train/validation sets
-5. Train LightGBM with the best parameters from grid search
-6. Evaluate on the validation set (MAE, RMSE, R2, ROC AUC)
+1. Load CSVs, filter to dogs only
+2. Convert `AdoptionSpeed` to a 0 to 1 score
+3. Run VADER on each description
+4. Split 80/20 train/validation
+5. Train LightGBM with best parameters
+6. Evaluate: MAE, RMSE, R2, ROC AUC
 7. Print feature importances
 8. Save predictions to `submission.csv`
+9. Save model to `outputs/lgb_model.txt`
 
 ---
 
 ## Adoption Score
 
-The original `AdoptionSpeed` column is an integer from 0 to 4. This project converts it to a 0 to 1 score so predictions are easier to interpret:
+| AdoptionSpeed | Meaning                 | Score |
+|---------------|-------------------------|-------|
+| 0             | Same day                | 1.00  |
+| 1             | Within a week           | 0.75  |
+| 2             | Within a month          | 0.50  |
+| 3             | Within 3 months         | 0.25  |
+| 4             | Not adopted in 100 days | 0.00  |
 
-| AdoptionSpeed | Meaning | Score |
-|---------------|---------|-------|
-| 0 | Same day | 1.00 |
-| 1 | Within a week | 0.75 |
-| 2 | Within a month | 0.50 |
-| 3 | Within 3 months | 0.25 |
-| 4 | Not adopted in 100 days | 0.00 |
+The formula is `1 - (AdoptionSpeed / 4)`. The scale is flipped so higher always means better for the dog.
 
 ---
 
 ## Grid Search
 
-The best parameters were found by running a full grid search (324 combinations, 3-fold CV, 972 total fits). That takes roughly 45 minutes so it is commented out in `model.py` and `main.py`. The winning parameters are hardcoded in `BEST_PARAMS` in `model.py`. To re-run the search, uncomment the relevant lines in both files.
+A full grid search ran across 324 combinations with 3-fold CV, totaling 972 model fits. It takes about 45 minutes so it
+is commented out in `model.py` and `main.py`. The best parameters are hardcoded in `BEST_PARAMS`. To re-run, uncomment
+the relevant lines in both files.
 
 ---
 
