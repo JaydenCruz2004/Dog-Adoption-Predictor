@@ -359,20 +359,20 @@ Follow the steps in the Data section above and place `train.csv` and `test.csv` 
 **4. Run the model**
 
 ```bash
-python models/main.py
+python3 models/main.py
 ```
 
 **5. Generate figures**
 
 ```bash
-python analysis/figures.py
-python analysis/roc_curve.py
+python3 analysis/figures.py
+python3 analysis/roc_curve.py
 ```
 
 **6. Generate website data**
 
 ```bash
-python analysis/dogwebsite.py
+python3 analysis/dogwebsite.py
 ```
 
 Open `web/dog.html` in a browser to see the predictions.
