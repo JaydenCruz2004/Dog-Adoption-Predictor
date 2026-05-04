@@ -47,7 +47,7 @@ on rescuer descriptions).
 
 ## Advanced Topics
 
-This project covers 5.5 points from the approved advanced topics list.
+This project covers 5.0 points from the approved advanced topics list.
 
 | Topic                                       | Points  |
 |---------------------------------------------|---------|
@@ -131,13 +131,23 @@ Four new features were built from raw text using VADER, turning unstructured des
 could use. After the first run, `Health` and `VideoAmt` were dropped. Both had near-zero importance scores (3.39 and
 4.46 gain respectively, vs 2,305 for Age). Removing them reduced noise without affecting performance.
 
-### 6. Simple Website Creation (0.5 points)
+### 6. Simple Website Creation (0.0 points)
 
 An interactive website at `web/dog.html` shows 24 real dogs from the test set with their actual model scores, photos,
 and stats from the CSV. A score slider filters dogs in real time. Clicking any card opens a modal with the full
 description and all stats. The site reads from `web/dogs.json`, which was created manually.  [Dog Website](https://www.jaydencruz.tech/web/dog.html)
 
----
+### 7. Virtual Environment (0.5 points)
+
+The project uses a Python virtual environment (`.venv`) to manage all dependencies. This was covered as a class topic by Simeon. The virtual environment isolates the project's packages from the system Python installation, making the project reproducible across different machines. All dependencies are pinned in `requirements.txt` and can be installed with `pip install -r requirements.txt` inside the environment.
+
+To create and activate the virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate       # Mac/Linux
+pip install -r requirements.txt
+```
 
 ## Data
 
