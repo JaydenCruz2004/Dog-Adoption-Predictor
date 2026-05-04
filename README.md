@@ -137,7 +137,7 @@ An interactive website at `web/dog.html` shows 24 real dogs from the test set wi
 and stats from the CSV. A score slider filters dogs in real time. Clicking any card opens a modal with the full
 description and all stats. The site reads from `web/dogs.json`, which was created manually.  [Dog Website](https://www.jaydencruz.tech/web/dog.html)
 
-### 7. Virtual Environment (0.5 points)
+### 7. Virtual Environment (0.0 points)
 
 The project uses a Python virtual environment (`.venv`) to manage all dependencies. This was covered as a class topic by Simeon. The virtual environment isolates the project's packages from the system Python installation, making the project reproducible across different machines. All dependencies are pinned in `requirements.txt` and can be installed with `pip install -r requirements.txt` inside the environment.
 
